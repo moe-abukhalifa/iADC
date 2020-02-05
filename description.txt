@@ -1,0 +1,22 @@
+Introduction to project
+
+The Integrated System & Circuit Design 'ISCD' Master course's project has a duration of 3 semesters 
+covers all aspects of the analog circuit design, full-custom layout, digital circuit design and 
+implementation and lab evaluation of an integrated circuit.
+
+It not only provides practical experience, but also soft skills like project planning, teamwork,
+technical documentation and presentation skills.
+
+The topic of the ISCD project is a dual-slope integrating Analog-to-Digital converter. The semesters 
+session "Introduction to the Project" mainly covers the concept work and analog circuit design of
+all nececcesay circuit blocks for the integrating ADC (IADC).
+
+
+Team on board: 
+Group 3 (Moh'd Abu Khalifa & Ram Ratnaker Reddy Bodha) was the group I worked with during the span 
+of the project.
+
+
+
+
+
