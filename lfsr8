@@ -1,0 +1,55 @@
+-------------------------------------------------------------------------------
+-- Title      : lfsr8
+-------------------------------------------------------------------------------
+-- File       : lfsr8.vhd
+-------------------------------------------------------------------------------
+-- Description: lfsr8 in many-to-one implementation
+-------------------------------------------------------------------------------
+
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_arith.all;
+
+entity lfsr8 is
+  port (
+    clk     : in  std_logic;
+    res_n   : in  std_logic;
+    run     : in  std_ulogic;
+    init    : in  std_ulogic;
+    q       : out std_logic_vector(7 downto 0)
+  );
+end lfsr8;
+
+architecture rtl of lfsr8 is
+  signal lfsr_reg      : std_logic_vector(7 downto 0);
+  signal next_lfsr_reg : std_logic_vector(7 downto 0);
+  signal count : unsigned(2 downto 0);
+
+begin
+
+  -- implement lfsr_reg register
+  process (clk, res_n)
+  begin
+    if (res_n = '0') then   -- asynchronous reset
+        lfsr_reg <= conv_std_logic_vector(1, lfsr_reg'length); -- "00000001";
+    elsif (clk'event and clk = '1') then
+       if (init = '1') then  -- synchronous reset
+            lfsr_reg <= conv_std_logic_vector(1, lfsr_reg'length); -- "00000001";
+        elsif (run = '1') then
+            lfsr_reg <= next_lfsr_reg;
+        end if;
+    end if;
+  end process;
+
+  -- implement lfsr shift and feedback logic
+  process (lfsr_reg)
+  begin
+    next_lfsr_reg(lfsr_reg'length-1 downto 1) <= lfsr_reg(lfsr_reg'length-2 downto 0);
+
+    next_lfsr_reg(0) <= (lfsr_reg(7) xor lfsr_reg(3)) xor (lfsr_reg(2) xor lfsr_reg(1));
+  end process;
+  
+  -- output  
+  q <= lfsr_reg;
+  
+end rtl;
