@@ -1,0 +1,94 @@
+-------------------------------------------------------------------------------
+-- Title      : misr32
+-- Project    : Lab2 - BIST Design Example
+-------------------------------------------------------------------------------
+-- File       : misr32.vhd
+-------------------------------------------------------------------------------
+-- Description: misr32 in many-to-one implementation
+-------------------------------------------------------------------------------
+
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.std_logic_arith.all;
+
+entity misr32 is
+  port (
+    clk     	: in  std_logic;
+    res_n   	: in  std_logic;
+    run     	: in  std_ulogic;
+    init    	: in  std_ulogic;
+    dout       	: out std_logic_vector(31 downto 0);
+    din         : in  std_logic_vector(31 downto 0)
+  );
+end misr32;
+
+architecture rtl of misr32 is
+
+  signal MISR_reg      : std_logic_vector(31 downto 0);
+  signal next_MISR_reg : std_logic_vector(31 downto 0);
+ 
+begin
+
+
+  -- implement MISR 32bit [1,5,6,31]
+  process (clk, res_n)
+  begin
+    if (res_n = '0') then   -- asynchronous reset
+        MISR_reg <= conv_std_logic_vector(1, MISR_reg'length); -- "00000001";
+    elsif (clk'event and clk = '1') then
+       if (init = '1') then  -- synchronous reset
+            MISR_reg <= conv_std_logic_vector(1, MISR_reg'length); -- "00000001";
+        elsif (run = '1') then
+            MISR_reg <= next_MISR_reg;
+        end if;
+    end if;
+  end process;
+
+
+  -- implement MISR shift and feedback logic  [1,5,6,31]
+  process (MISR_reg)
+  variable zero : std_logic; 
+
+ begin
+	
+   zero := ((MISR_reg(0) or MISR_reg(1) or MISR_reg(2) or MISR_reg(3) or MISR_reg(4) or MISR_reg(5) or MISR_reg(6) or MISR_reg(7) or MISR_reg(8) or MISR_reg(9) or MISR_reg(10) or MISR_reg(11) or MISR_reg(12) or MISR_reg(13) or MISR_reg(14) or MISR_reg(15) or MISR_reg(16) or MISR_reg(17) or MISR_reg(18) or MISR_reg(19) or MISR_reg(20) or MISR_reg(21) or MISR_reg(22) or MISR_reg(23) or MISR_reg(24) or MISR_reg(25) or MISR_reg(26) or MISR_reg(27) or MISR_reg(28) or MISR_reg(29)) nor MISR_reg(30)) xor MISR_reg(31);
+
+     next_MISR_reg(0) <= (zero xor din(0));
+     next_MISR_reg(1) <= (MISR_reg(0) xor din(1));
+     next_MISR_reg(2) <= (MISR_reg(1) xor din(2)) xor zero;
+     next_MISR_reg(3) <= (MISR_reg(2) xor din(3));
+     next_MISR_reg(4) <= (MISR_reg(3) xor din(4));
+     next_MISR_reg(5) <= (MISR_reg(4) xor din(5));
+     next_MISR_reg(6) <= (MISR_reg(5) xor din(6)) xor zero;
+     next_MISR_reg(7) <= (MISR_reg(6) xor din(7)) xor zero;
+     next_MISR_reg(8) <= (MISR_reg(7) xor din(8));
+     next_MISR_reg(9) <= (MISR_reg(8) xor din(9));
+     next_MISR_reg(10) <= (MISR_reg(9) xor din(10));
+     next_MISR_reg(11) <= (MISR_reg(10) xor din(11));
+     next_MISR_reg(12) <= (MISR_reg(11) xor din(12));
+     next_MISR_reg(13) <= (MISR_reg(12) xor din(13));
+     next_MISR_reg(14) <= (MISR_reg(13) xor din(14));
+     next_MISR_reg(15) <= (MISR_reg(14) xor din(15));
+     next_MISR_reg(16) <= (MISR_reg(15) xor din(16));
+     next_MISR_reg(17) <= (MISR_reg(16) xor din(17));
+     next_MISR_reg(18) <= (MISR_reg(17) xor din(18));
+     next_MISR_reg(19) <= (MISR_reg(18) xor din(19));
+     next_MISR_reg(20) <= (MISR_reg(19) xor din(20));
+     next_MISR_reg(21) <= (MISR_reg(20) xor din(21));
+     next_MISR_reg(22) <= (MISR_reg(21) xor din(22));
+     next_MISR_reg(23) <= (MISR_reg(22) xor din(23));
+     next_MISR_reg(24) <= (MISR_reg(23) xor din(24));
+     next_MISR_reg(25) <= (MISR_reg(24) xor din(25));
+     next_MISR_reg(26) <= (MISR_reg(25) xor din(26));
+     next_MISR_reg(27) <= (MISR_reg(26) xor din(27));
+     next_MISR_reg(28) <= (MISR_reg(27) xor din(28));
+     next_MISR_reg(29) <= (MISR_reg(28) xor din(29));
+     next_MISR_reg(30) <= (MISR_reg(29) xor din(30));
+     next_MISR_reg(31) <= (MISR_reg(30) xor din(31));
+
+  end process;
+
+  -- output  
+ dout <= bist_dout;
+
+end rtl;
